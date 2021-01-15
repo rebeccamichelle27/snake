@@ -14,9 +14,10 @@ const log = document.getElementById("log");
 
 document.addEventListener('keydown', logKey);
 
-setInterval(redraw, 500);
+setInterval(step, 500);
 
-function redraw() {
+function step() {
+    // update snake position
     if (lastPress === "ArrowUp") {
         y -= 20;
     } else if (lastPress === "ArrowDown") {
@@ -26,12 +27,23 @@ function redraw() {
     } else if (lastPress === "ArrowRight") {
         x += 20;
     }
+
+    // handle apple gobbling and update apple position
+    if (x === appleX && y === appleY) {
+        console.log("gobble!");
+        [appleX, appleY] = randomCoord();
+    }
+
+    redraw();
+}
+
+function redraw() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, 600, 600);
-    ctx.fillStyle = 'green';
-    ctx.fillRect(x, y, 20, 20);
     ctx.fillStyle = 'red';
     ctx.fillRect(appleX, appleY, 20, 20);
+    ctx.fillStyle = 'green';
+    ctx.fillRect(x, y, 20, 20);
 }
 
 
