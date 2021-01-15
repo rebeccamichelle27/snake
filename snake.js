@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 
 let x = 0;
 let y = 0;
+let [appleX, appleY] = randomCoord();
 
 let lastPress = "ArrowRight";
 
@@ -29,9 +30,18 @@ function redraw() {
     ctx.fillRect(0, 0, 600, 600);
     ctx.fillStyle = 'green';
     ctx.fillRect(x, y, 20, 20);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(appleX, appleY, 20, 20);
 }
 
 
 function logKey(e) {
     lastPress = e.code;
+}
+
+function randomCoord() {
+    let appleX = 20 * Math.floor(Math.random() * 30);
+    let appleY = 20 * Math.floor(Math.random() * 30);
+    let appleCoords = [appleX, appleY];
+    return appleCoords;
 }
