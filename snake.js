@@ -8,30 +8,25 @@ class Coord {
     }
 }
 
-let snakeParts = [new Coord(0, 0), new Coord(20, 0), new Coord(40, 0), new Coord(60, 0)];
-
+// Config
 let size = 30
 let squares = 15
-
-let score = 0;
-
 canvas.height = size * squares;
 canvas.width = size * squares;
 
-let [appleX, appleY] = [0, 90];
-// let [appleX, appleY] = randomCoord();
-
-let lastPress = "ArrowRight";
-
-ctx.fillStyle = 'green';
-ctx.fillRect(snakeParts[0].x, snakeParts[0].y, size, size);
-
+// Game State
+let score;
+let snakeParts;
+let timer;
+let appleX;
+let appleY;
+let lastPress;
+let gameover = false;
 
 const log = document.getElementById("log");
 
-document.addEventListener('keydown', logKey);
+document.addEventListener('keydown', handleKey);
 
-setInterval(step, 250);
 
 function step() {
     // update snake position
@@ -58,6 +53,24 @@ function step() {
 
     }
 
+    for (let i = 0; i < snakeParts.length - 1; i++) {
+        if (snakeParts[i].x === head.x && snakeParts[i].y === head.y) {
+            gameover = true;
+            clearInterval(timer);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '50px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+            ctx.font = '30px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("Press ENTER to start a new game", canvas.width / 2, (canvas.height / 2) + 50);
+            return;
+
+        }
+    }
+
     // handle apple gobbling and update apple position
     if (head.x === appleX && head.y === appleY) {
         console.log("gobble!");
@@ -68,6 +81,8 @@ function step() {
 
     redraw();
 }
+
+
 
 function redraw() {
     ctx.fillStyle = 'black';
@@ -86,7 +101,12 @@ function redraw() {
 }
 
 
-function logKey(e) {
+function handleKey(e) {
+    if (e.code === "Enter" && gameover) {
+        restartGame();
+        return;
+    }
+
     lastPress = e.code;
 }
 
@@ -96,3 +116,14 @@ function randomCoord() {
     let appleCoords = [appleX, appleY];
     return appleCoords;
 }
+
+function restartGame() {
+    snakeParts = [new Coord(0, 0), new Coord(20, 0), new Coord(40, 0), new Coord(60, 0)];
+    lastPress = "ArrowRight";
+    timer = setInterval(step, 250);
+    score = 0;
+    [appleX, appleY] = randomCoord();
+    gameover = false;
+}
+
+restartGame();
