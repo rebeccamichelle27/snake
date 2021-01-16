@@ -1,3 +1,10 @@
+
+// Constants
+const UP = "UP";
+const DOWN = "DOWN";
+const LEFT = "LEFT";
+const RIGHT = "RIGHT";
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -24,10 +31,10 @@ let snakeParts;
 let timer;
 let appleX;
 let appleY;
-let lastPress;
 let gameover = false;
 let speed;
 let debugging = false;
+let direction = RIGHT;
 
 document.addEventListener('keydown', handleKey);
 
@@ -35,13 +42,13 @@ function step() {
     // update snake position
     let head = snakeParts[snakeParts.length - 1].copy();
 
-    if (lastPress === "ArrowUp") {
+    if (direction === UP) {
         head.y -= 1;
-    } else if (lastPress === "ArrowDown") {
+    } else if (direction === DOWN) {
         head.y += 1;
-    } else if (lastPress === "ArrowLeft") {
+    } else if (direction === LEFT) {
         head.x -= 1;
-    } else if (lastPress === "ArrowRight") {
+    } else if (direction === RIGHT) {
         head.x += 1;
     }
     snakeParts.push(head);
@@ -129,7 +136,16 @@ function handleKey(e) {
         return;
     }
 
-    lastPress = e.code;
+    // handle directional input
+    if (e.code === "ArrowUp") {
+        direction = UP;
+    } else if (e.code === "ArrowDown") {
+        direction = DOWN;
+    } else if (e.code === "ArrowLeft") {
+        direction = LEFT;
+    } else if (e.code === "ArrowRight") {
+        direction = RIGHT;
+    }
 
     if (debugging) {
         step();
@@ -147,7 +163,7 @@ function randomCoord() {
 function resetGame() {
     speed = 250;
     snakeParts = [new Coord(0, 0), new Coord(1, 0), new Coord(2, 0), new Coord(3, 0)];
-    lastPress = "ArrowRight";
+    direction = RIGHT;
     score = 0;
     [appleX, appleY] = randomCoord();
     gameover = false;
