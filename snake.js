@@ -13,6 +13,8 @@ let snakeParts = [new Coord(0, 0), new Coord(20, 0), new Coord(40, 0), new Coord
 let size = 30
 let squares = 15
 
+let score = 0;
+
 canvas.height = size * squares;
 canvas.width = size * squares;
 
@@ -23,6 +25,7 @@ let lastPress = "ArrowRight";
 
 ctx.fillStyle = 'green';
 ctx.fillRect(snakeParts[0].x, snakeParts[0].y, size, size);
+
 
 const log = document.getElementById("log");
 
@@ -60,6 +63,7 @@ function step() {
         console.log("gobble!");
         [appleX, appleY] = randomCoord();
         snakeParts.unshift(new Coord(newSegmentX, newSegmentY));
+        score += 100;
     }
 
     redraw();
@@ -74,7 +78,10 @@ function redraw() {
         ctx.fillStyle = 'green';
         ctx.fillRect(segment.x, segment.y, size, size);
     });
-
+    ctx.fillStyle = 'white';
+    ctx.font = '30px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("Score: " + score, canvas.width / 2, 30);
 
 }
 
