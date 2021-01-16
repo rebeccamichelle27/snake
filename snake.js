@@ -27,6 +27,7 @@ let appleY;
 let lastPress;
 let gameover = false;
 let speed;
+let debugging = false;
 
 document.addEventListener('keydown', handleKey);
 
@@ -35,13 +36,13 @@ function step() {
     let head = snakeParts[snakeParts.length - 1].copy();
 
     if (lastPress === "ArrowUp") {
-        head.y -= size;
+        head.y -= 1;
     } else if (lastPress === "ArrowDown") {
-        head.y += size;
+        head.y += 1;
     } else if (lastPress === "ArrowLeft") {
-        head.x -= size;
+        head.x -= 1;
     } else if (lastPress === "ArrowRight") {
-        head.x += size;
+        head.x += 1;
     }
     snakeParts.push(head);
 
@@ -67,11 +68,17 @@ function step() {
         score += 100;
         speed = speed * 0.95;
         clearInterval(timer);
-        timer = setInterval(step, speed);
-
+        if (!debugging) {
+            timer = setInterval(step, speed);
+        }
     } else {
         // remove tip of tail
         snakeParts.shift();
+    }
+
+    // if debugging, print snake coords
+    if (debugging) {
+        console.log("snake:", ...snakeParts.map(({ x, y }) => [x, y]));
     }
 
     redraw();
@@ -98,13 +105,13 @@ function redraw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // draw apple
-    ctx.fillStyle = 'red';
-    ctx.fillRect(appleX, appleY, size, size);
+    let spriteSheet = document.getElementById("spriteSheet");
+    ctx.drawImage(spriteSheet, 0, 64 * 3, 64, 64, appleX * size, appleY * size, size, size);
 
     // draw snake
     snakeParts.forEach(function (segment) {
         ctx.fillStyle = 'green';
-        ctx.fillRect(segment.x, segment.y, size, size);
+        ctx.fillRect(segment.x * size, segment.y * size, size, size);
     });
 
     // draw score
@@ -123,25 +130,42 @@ function handleKey(e) {
     }
 
     lastPress = e.code;
+
+    if (debugging) {
+        step();
+    }
 }
 
 function randomCoord() {
-    let appleX = size * Math.floor(Math.random() * squares);
-    let appleY = size * Math.floor(Math.random() * squares);
+    let appleX = Math.floor(Math.random() * squares);
+    let appleY = Math.floor(Math.random() * squares);
     let appleCoords = [appleX, appleY];
     return appleCoords;
 }
 
-function restartGame() {
 
+function resetGame() {
     speed = 250;
-
-    snakeParts = [new Coord(size * 0, 0), new Coord(size * 1, 0), new Coord(size * 2, 0), new Coord(size * 3, 0)];
+    snakeParts = [new Coord(0, 0), new Coord(1, 0), new Coord(2, 0), new Coord(3, 0)];
     lastPress = "ArrowRight";
-    timer = setInterval(step, speed);
     score = 0;
     [appleX, appleY] = randomCoord();
     gameover = false;
 }
 
-restartGame();
+function restartGame() {
+    resetGame();
+    redraw();
+    timer = setInterval(step, speed);
+}
+
+function debugGame() {
+    resetGame();
+    debugging = true;
+    appleX = 7;
+    appleY = 3;
+    redraw();
+}
+
+// restartGame();
+debugGame();
