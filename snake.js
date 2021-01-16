@@ -19,6 +19,14 @@ class Coord {
     }
 }
 
+// have both coordinate as well as direction
+class Part {
+    constructor(coord, direction) {
+        this.coord = coord;
+        this.direction = direction;
+    }
+}
+
 // Config
 let size = 64
 let squares = 15
@@ -40,7 +48,7 @@ document.addEventListener('keydown', handleKey);
 
 function step() {
     // update snake position
-    let head = snakeParts[snakeParts.length - 1].copy();
+    let head = snakeParts[snakeParts.length - 1].coord.copy();
 
     if (direction === UP) {
         head.y -= 1;
@@ -51,11 +59,11 @@ function step() {
     } else if (direction === RIGHT) {
         head.x += 1;
     }
-    snakeParts.push(head);
+    snakeParts.push(new Part(head, direction));
 
     //Determines if the snake has hit its tail
     for (let i = 0; i < snakeParts.length - 1; i++) {
-        if (snakeParts[i].x === head.x && snakeParts[i].y === head.y) {
+        if (snakeParts[i].coord.x === head.x && snakeParts[i].coord.y === head.y) {
             gameOver();
             return;
         }
@@ -85,7 +93,7 @@ function step() {
 
     // if debugging, print snake coords
     if (debugging) {
-        console.log("snake:", ...snakeParts.map(({ x, y }) => [x, y]));
+        console.log("snake:", ...snakeParts.map(({ coord, direction }) => [coord.x, coord.y, direction]));
     }
 
     redraw();
@@ -113,12 +121,16 @@ function redraw() {
 
     // draw apple
     let spriteSheet = document.getElementById("spriteSheet");
-    ctx.drawImage(spriteSheet, 0, 64 * 3, 64, 64, appleX * size, appleY * size, size, size);
+    ctx.drawImage(spriteSheet, 0 * 64, 3 * 64, 64, 64, appleX * size, appleY * size, size, size);
 
     // draw snake
     snakeParts.forEach(function (segment) {
         ctx.fillStyle = 'green';
-        ctx.fillRect(segment.x * size, segment.y * size, size, size);
+        if (segment.direction === LEFT || segment.direction === RIGHT) {
+            ctx.drawImage(spriteSheet, 1 * 64, 0 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        } else if (segment.direction === UP || segment.direction === DOWN) {
+            ctx.drawImage(spriteSheet, 2 * 64, 1 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        }
     });
 
     // draw score
@@ -162,7 +174,13 @@ function randomCoord() {
 
 function resetGame() {
     speed = 250;
-    snakeParts = [new Coord(0, 0), new Coord(1, 0), new Coord(2, 0), new Coord(3, 0)];
+    snakeParts = [
+        new Part(new Coord(0, 0), RIGHT),
+        new Part(new Coord(1, 0), RIGHT),
+        new Part(new Coord(2, 0), RIGHT),
+        new Part(new Coord(3, 0), RIGHT)
+
+    ];
     direction = RIGHT;
     score = 0;
     [appleX, appleY] = randomCoord();
