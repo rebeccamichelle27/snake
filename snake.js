@@ -6,6 +6,10 @@ class Coord {
         this.x = x;
         this.y = y;
     }
+
+    copy() {
+        return new Coord(this.x, this.y);
+    }
 }
 
 // Config
@@ -23,14 +27,14 @@ let appleY;
 let lastPress;
 let gameover = false;
 
-const log = document.getElementById("log");
-
 document.addEventListener('keydown', handleKey);
-
 
 function step() {
     // update snake position
 
+
+
+    /*
     let newSegmentX = snakeParts[0].x;
     let newSegmentY = snakeParts[0].y;
 
@@ -50,8 +54,20 @@ function step() {
         head.x -= size;
     } else if (lastPress === "ArrowRight") {
         head.x += size;
-
     }
+    */
+
+    let head = snakeParts[snakeParts.length - 1].copy();
+    if (lastPress === "ArrowUp") {
+        head.y -= size;
+    } else if (lastPress === "ArrowDown") {
+        head.y += size;
+    } else if (lastPress === "ArrowLeft") {
+        head.x -= size;
+    } else if (lastPress === "ArrowRight") {
+        head.x += size;
+    }
+    snakeParts.push(head);
 
     for (let i = 0; i < snakeParts.length - 1; i++) {
         if (snakeParts[i].x === head.x && snakeParts[i].y === head.y) {
@@ -71,13 +87,25 @@ function step() {
         }
     }
 
+    if (head.x === appleX && head.y === appleY) {
+        console.log("gobble!");
+        [appleX, appleY] = randomCoord();
+        score += 100;
+    } else {
+        // remove tip of tail
+        snakeParts.shift();
+    }
+
+
     // handle apple gobbling and update apple position
+    /*
     if (head.x === appleX && head.y === appleY) {
         console.log("gobble!");
         [appleX, appleY] = randomCoord();
         snakeParts.unshift(new Coord(newSegmentX, newSegmentY));
         score += 100;
     }
+    */
 
     redraw();
 }
