@@ -205,14 +205,18 @@ function handleKey(e) {
         return;
     }
 
+    let head = snakeParts[snakeParts.length - 1];
+
     // handle directional input
-    if (e.code === "ArrowUp") {
+    // ignore attempt to doubleback on yourself
+
+    if (e.code === "ArrowUp" && head.direction !== DOWN) {
         direction = UP;
-    } else if (e.code === "ArrowDown") {
+    } else if (e.code === "ArrowDown" && head.direction !== UP) {
         direction = DOWN;
-    } else if (e.code === "ArrowLeft") {
+    } else if (e.code === "ArrowLeft" && head.direction !== RIGHT) {
         direction = LEFT;
-    } else if (e.code === "ArrowRight") {
+    } else if (e.code === "ArrowRight" && head.direction !== LEFT) {
         direction = RIGHT;
     }
 
