@@ -123,15 +123,52 @@ function redraw() {
     let spriteSheet = document.getElementById("spriteSheet");
     ctx.drawImage(spriteSheet, 0 * 64, 3 * 64, 64, 64, appleX * size, appleY * size, size, size);
 
-    // draw snake
-    snakeParts.forEach(function (segment) {
-        ctx.fillStyle = 'green';
-        if (segment.direction === LEFT || segment.direction === RIGHT) {
+    // draw tail of snake
+    let tail = snakeParts[0];
+    let beforeTail = snakeParts[1];
+
+    if (beforeTail.direction === UP) {
+        ctx.drawImage(spriteSheet, 3 * 64, 2 * 64, 64, 64, tail.coord.x * size, tail.coord.y * size, size, size);
+    } else if (beforeTail.direction === DOWN) {
+        ctx.drawImage(spriteSheet, 4 * 64, 3 * 64, 64, 64, tail.coord.x * size, tail.coord.y * size, size, size);
+    } else if (beforeTail.direction === RIGHT) {
+        ctx.drawImage(spriteSheet, 4 * 64, 2 * 64, 64, 64, tail.coord.x * size, tail.coord.y * size, size, size);
+    } else if (beforeTail.direction === LEFT) {
+        ctx.drawImage(spriteSheet, 3 * 64, 3 * 64, 64, 64, snakeParts[0].coord.x * size, snakeParts[0].coord.y * size, size, size);
+    }
+
+    // draw body of snake
+    for (let i = 1; i < snakeParts.length - 1; i++) {
+        let segment = snakeParts[i];
+        let nextSegment = snakeParts[i + 1];
+
+        if (segment.direction === LEFT && nextSegment.direction === DOWN || segment.direction === UP && nextSegment.direction === RIGHT) {
+            ctx.drawImage(spriteSheet, 0 * 64, 0 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        } else if (segment.direction === DOWN && nextSegment.direction === RIGHT || segment.direction === LEFT && nextSegment.direction === UP) {
+            ctx.drawImage(spriteSheet, 0 * 64, 1 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        } else if (segment.direction === RIGHT && nextSegment.direction === DOWN || segment.direction === UP && nextSegment.direction === LEFT) {
+            ctx.drawImage(spriteSheet, 2 * 64, 0 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        } else if (segment.direction === DOWN && nextSegment.direction === LEFT || segment.direction === RIGHT && nextSegment.direction === UP) {
+            ctx.drawImage(spriteSheet, 2 * 64, 2 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
+        } else if (segment.direction === LEFT || segment.direction === RIGHT) {
             ctx.drawImage(spriteSheet, 1 * 64, 0 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
         } else if (segment.direction === UP || segment.direction === DOWN) {
             ctx.drawImage(spriteSheet, 2 * 64, 1 * 64, 64, 64, segment.coord.x * size, segment.coord.y * size, size, size);
         }
-    });
+    };
+
+    // draw head of snake
+    let head = snakeParts[snakeParts.length - 1];
+
+    if (head.direction === UP) {
+        ctx.drawImage(spriteSheet, 3 * 64, 0 * 64, 64, 64, head.coord.x * size, head.coord.y * size, size, size);
+    } else if (head.direction === DOWN) {
+        ctx.drawImage(spriteSheet, 4 * 64, 1 * 64, 64, 64, head.coord.x * size, head.coord.y * size, size, size);
+    } else if (head.direction === LEFT) {
+        ctx.drawImage(spriteSheet, 3 * 64, 1 * 64, 64, 64, head.coord.x * size, head.coord.y * size, size, size);
+    } else if (head.direction === RIGHT) {
+        ctx.drawImage(spriteSheet, 4 * 64, 0 * 64, 64, 64, head.coord.x * size, head.coord.y * size, size, size);
+    }
 
     // draw score
     ctx.fillStyle = 'white';
