@@ -146,14 +146,36 @@ function redraw() {
         let segment = snakeParts[i];
         let nextSegment = snakeParts[i + 1];
 
-        if (segment.direction === LEFT && nextSegment.direction === DOWN || segment.direction === UP && nextSegment.direction === RIGHT) {
-            drawSprite(0, 0, segment.coord);
-        } else if (segment.direction === DOWN && nextSegment.direction === RIGHT || segment.direction === LEFT && nextSegment.direction === UP) {
-            drawSprite(0, 1, segment.coord);
-        } else if (segment.direction === RIGHT && nextSegment.direction === DOWN || segment.direction === UP && nextSegment.direction === LEFT) {
+
+        function rev(dir) {
+            if (dir === UP) {
+                return DOWN
+            } else if (dir === DOWN) {
+                return UP
+            } else if (dir === LEFT) {
+                return RIGHT
+            } else if (dir === RIGHT) {
+                return LEFT
+            }
+        };
+
+        function pathIs(dir1, dir2) {
+            return (
+                segment.direction === dir1 && nextSegment.direction === dir2 ||
+                segment.direction === rev(dir2) && nextSegment.direction === rev(dir1)
+            );
+
+        }
+
+        if (pathIs(UP, LEFT)) {
             drawSprite(2, 0, segment.coord);
-        } else if (segment.direction === DOWN && nextSegment.direction === LEFT || segment.direction === RIGHT && nextSegment.direction === UP) {
+        } else if (pathIs(UP, RIGHT)) {
+            drawSprite(0, 0, segment.coord);
+        } else if (pathIs(DOWN, LEFT)) {
             drawSprite(2, 2, segment.coord);
+        } else if (pathIs(DOWN, RIGHT)) {
+            drawSprite(0, 1, segment.coord);
+
         } else if (segment.direction === LEFT || segment.direction === RIGHT) {
             drawSprite(1, 0, segment.coord);
         } else if (segment.direction === UP || segment.direction === DOWN) {
