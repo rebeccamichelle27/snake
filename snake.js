@@ -134,7 +134,7 @@ function redraw() {
     } else if (beforeTail.direction === RIGHT) {
         ctx.drawImage(spriteSheet, 4 * 64, 2 * 64, 64, 64, tail.coord.x * size, tail.coord.y * size, size, size);
     } else if (beforeTail.direction === LEFT) {
-        ctx.drawImage(spriteSheet, 3 * 64, 3 * 64, 64, 64, snakeParts[0].coord.x * size, snakeParts[0].coord.y * size, size, size);
+        ctx.drawImage(spriteSheet, 3 * 64, 3 * 64, 64, 64, tail.coord.x * size, tail.coord.y * size, size, size);
     }
 
     // draw body of snake
