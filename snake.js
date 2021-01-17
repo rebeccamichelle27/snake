@@ -146,23 +146,17 @@ function redraw() {
         let segment = snakeParts[i];
         let nextSegment = snakeParts[i + 1];
 
-
-        function rev(dir) {
-            if (dir === UP) {
-                return DOWN
-            } else if (dir === DOWN) {
-                return UP
-            } else if (dir === LEFT) {
-                return RIGHT
-            } else if (dir === RIGHT) {
-                return LEFT
-            }
-        };
+        const rev = {
+            [UP]: DOWN,
+            [DOWN]: UP,
+            [LEFT]: RIGHT,
+            [RIGHT]: LEFT,
+        }
 
         function pathIs(dir1, dir2) {
             return (
                 segment.direction === dir1 && nextSegment.direction === dir2 ||
-                segment.direction === rev(dir2) && nextSegment.direction === rev(dir1)
+                segment.direction === rev[dir2] && nextSegment.direction === rev[dir1]
             );
 
         }
