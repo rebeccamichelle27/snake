@@ -43,6 +43,7 @@ let gameover = false;
 let speed;
 let debugging = false;
 let direction = RIGHT;
+let gameActive = false;
 
 document.addEventListener('keydown', handleKey);
 
@@ -70,7 +71,8 @@ function step() {
     }
 
     //Determines if the snake has moved offscreen 
-    if (head.x === canvas.width || head.x < 0 || head.y === canvas.height || head.y < 0) {
+    console.log(canvas.width, canvas.height);
+    if (head.x >= squares || head.x < 0 || head.y >= squares || head.y < 0) {
         gameOver();
         return;
     }
@@ -102,15 +104,21 @@ function step() {
 function gameOver() {
     gameover = true;
     clearInterval(timer);
+    ctx.globalAlpha = 0.7;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
     ctx.fillStyle = 'white';
-    ctx.font = '50px serif';
+    ctx.font = '50px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-    ctx.font = '30px serif';
+    ctx.font = '30px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText("Press ENTER to start a new game", canvas.width / 2, (canvas.height / 2) + 50);
+    ctx.fillStyle = 'white';
+    ctx.font = '30px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("Score: " + score, canvas.width / 2, 30);
     return;
 }
 
@@ -192,7 +200,7 @@ function redraw() {
 
     // draw score
     ctx.fillStyle = 'white';
-    ctx.font = '30px serif';
+    ctx.font = '30px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText("Score: " + score, canvas.width / 2, 30);
 
@@ -200,7 +208,8 @@ function redraw() {
 
 
 function handleKey(e) {
-    if (e.code === "Enter" && gameover) {
+    if (e.code === "Enter" && gameover || e.code === "Enter" && !gameActive) {
+        gameActive = true;
         restartGame();
         return;
     }
@@ -226,8 +235,29 @@ function handleKey(e) {
 }
 
 function randomCoord() {
-    let appleX = Math.floor(Math.random() * squares);
-    let appleY = Math.floor(Math.random() * squares);
+
+    let appleX;
+    let appleY;
+
+    while (true) {
+
+        let conflict = false;
+
+        appleX = Math.floor(Math.random() * squares);
+        appleY = Math.floor(Math.random() * squares);
+
+        for (segment of snakeParts) {
+            if (segment.coord.x === appleX && segment.coord.y === appleY) {
+                conflict = true;
+                break;
+            }
+        }
+
+        if (!conflict) {
+            break;
+        }
+    }
+
     let appleCoords = [appleX, appleY];
     return appleCoords;
 }
@@ -262,5 +292,20 @@ function debugGame() {
     redraw();
 }
 
+function showTitle() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = 'white';
+    ctx.font = '50px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("SNAKE", canvas.width / 2, canvas.height / 2);
+    ctx.font = '30px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("Press ENTER to play", canvas.width / 2, (canvas.height / 2) + 50);
+}
+
+
+showTitle();
 // restartGame();
-debugGame();
+// debugGame();
