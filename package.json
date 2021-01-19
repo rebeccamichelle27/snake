@@ -1,0 +1,22 @@
+{
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "",
+  "main": "snake.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rebeccamichelle27/snake.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rebeccamichelle27/snake/issues"
+  },
+  "homepage": "https://github.com/rebeccamichelle27/snake#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

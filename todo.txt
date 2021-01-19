@@ -1,9 +1,8 @@
-1. Start screen - press enter to play
 2. Create an express app that serves the application
 3. Push the app to Heroku
     - set up DNS 
 4. mongo database - add this to store top scores
 5. revise express app to store the database
-6. Make the game UI when you die, asks for the player name and then sends their name and score to the database.
+6. when you die, ask for the player name and then send their name and score to the database.
 7. Add tests
 
