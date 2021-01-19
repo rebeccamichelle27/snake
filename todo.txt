@@ -1,4 +1,3 @@
-2. Create an express app that serves the application
 3. Push the app to Heroku
     - set up DNS 
 4. mongo database - add this to store top scores
