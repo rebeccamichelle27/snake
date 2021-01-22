@@ -1,4 +1,5 @@
-
+var audio = new Audio('/MachinimaSound.com_-_The_Arcade.mp3');
+audio.play();
 
 // Constants
 const UP = "UP";
@@ -44,9 +45,9 @@ let appleX;
 let appleY;
 let speed;
 let debugging = false;
-let direction = RIGHT;
 let gameState = "title";
 let name = "";
+let directionList = [RIGHT];
 
 document.addEventListener('keydown', handleKey);
 
@@ -81,6 +82,12 @@ function step() {
     // update snake position
     let head = snakeParts[snakeParts.length - 1].coord.copy();
 
+    if (directionList.length > 1) {
+        directionList.shift();
+    }
+
+    let direction = directionList[0]
+
     if (direction === UP) {
         head.y -= 1;
     } else if (direction === DOWN) {
@@ -113,7 +120,8 @@ function step() {
         console.log("gobble!");
         [appleX, appleY] = randomCoord();
         score += 100;
-        speed = speed * 0.95;
+        var audio = new Audio('/coin.mp3');
+        audio.play();
         clearInterval(timer);
         if (!debugging) {
             timer = setInterval(step, speed);
@@ -132,7 +140,8 @@ function step() {
 }
 
 function scaledFont(originalSize) {
-    return originalSize * (canvas.width / (64 * 15)) + "px sans-serif";
+    // return originalSize * (canvas.width / (64 * 15)) + "px sans-serif";
+    return originalSize * (canvas.width / (64 * 15)) + "px Sniglet";
 }
 
 function showTitle() {
@@ -140,22 +149,27 @@ function showTitle() {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1;
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#4BF542';
         ctx.font = scaledFont(50);
         ctx.textAlign = 'center';
-        ctx.fillText("SNAKE", canvas.width / 2, 50);
+        ctx.fillText("SNAKE", canvas.width / 2, 150);
         ctx.font = scaledFont(40);
+        ctx.fillStyle = 'white';
         ctx.textAlign = 'center';
-        ctx.fillText("HIGH SCORES", canvas.width / 2, 100);
+        ctx.fillText("HIGH SCORES", canvas.width / 2, 225);
 
         for (let i = 0; i < scores.length; i++) {
-            ctx.textAlign = 'center';
+            ctx.textAlign = 'left';
             ctx.font = scaledFont(30);
-            ctx.fillText(`${scores[i].name} ${scores[i].score}`, canvas.width / 2, 175 + 35 * i)
+            ctx.fillText(`${scores[i].name}`, canvas.width / 3, 300 + 35 * i)
+            ctx.textAlign = 'right'
+            ctx.fillText(`${scores[i].score}`, canvas.width / 1.5, 300 + 35 * i)
+
         }
+        ctx.fillStyle = '#4BF542'
         ctx.font = scaledFont(30);
         ctx.textAlign = 'center';
-        ctx.fillText("Press ENTER to play", canvas.width / 2, (canvas.height / 2) + 400);
+        ctx.fillText("Press ENTER to play", canvas.width / 2, (canvas.height / 2) + 300);
     });
 }
 
@@ -239,10 +253,10 @@ function drawGame() {
 }
 
 function gameOver() {
-    console.log("DRAWING GAME OVER SCREEN");
 
     gameState = "gameover";
     clearInterval(timer);
+    drawGame();
     ctx.globalAlpha = 0.7;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -307,6 +321,10 @@ function handleKey(e) {
         if (e.key.length == 1) {
             name += e.key;
         }
+        if (e.key === "Backspace") {
+            name = name.substring(0, name.length - 1);
+            console.log(name);
+        }
         redraw();
         return
     }
@@ -317,14 +335,16 @@ function handleKey(e) {
         // handle directional input
         // ignore attempt to doubleback on yourself
 
-        if (e.code === "ArrowUp" && head.direction !== DOWN) {
-            direction = UP;
-        } else if (e.code === "ArrowDown" && head.direction !== UP) {
-            direction = DOWN;
-        } else if (e.code === "ArrowLeft" && head.direction !== RIGHT) {
-            direction = LEFT;
-        } else if (e.code === "ArrowRight" && head.direction !== LEFT) {
-            direction = RIGHT;
+        let lastDirection = directionList[directionList.length - 1]
+
+        if (e.code === "ArrowUp" && lastDirection !== DOWN) {
+            directionList.push(UP);
+        } else if (e.code === "ArrowDown" && lastDirection !== UP) {
+            directionList.push(DOWN);
+        } else if (e.code === "ArrowLeft" && lastDirection !== RIGHT) {
+            directionList.push(LEFT);
+        } else if (e.code === "ArrowRight" && lastDirection !== LEFT) {
+            directionList.push(RIGHT);
         }
 
         if (debugging) {
@@ -363,7 +383,7 @@ function randomCoord() {
 
 
 function resetGame() {
-    speed = 250;
+    speed = 150;
     snakeParts = [
         new Part(new Coord(0, 0), RIGHT),
         new Part(new Coord(1, 0), RIGHT),
@@ -371,7 +391,7 @@ function resetGame() {
         new Part(new Coord(3, 0), RIGHT)
 
     ];
-    direction = RIGHT;
+    directionList = [RIGHT];
     score = 0;
     [appleX, appleY] = randomCoord();
     gameState = "playing";
@@ -394,30 +414,39 @@ function debugGame() {
 }
 
 
-showTitle();
-// restartGame();
-// debugGame();
 
-//Run function when browser  resize
-window.addEventListener('resize', respondCanvas);
 
-function min(a, b) { return a < b ? a : b; }
 
-function respondCanvas() {
-    var rect = canvas.getBoundingClientRect();
 
-    var canvasSize = min(window.innerHeight - rect.top, container.clientWidth);
+(async () => {
+    // wait for font to load
+    await document.fonts.load("12px Sniglet");
 
-    canvas.width = squares * Math.floor(canvasSize / squares); //max width
-    canvas.height = squares * Math.floor(canvasSize / squares);  //set the heigh to the width
+    showTitle();
+    // restartGame();
+    // debugGame();
 
-    size = Math.floor(canvasSize / squares);
+    //Run function when browser  resize
+    window.addEventListener('resize', respondCanvas);
 
-    redraw();
-}
+    function min(a, b) { return a < b ? a : b; }
 
-//Initial call
-respondCanvas();
+    function respondCanvas() {
+        var rect = canvas.getBoundingClientRect();
 
-// 100 px (original text size) * 32 (new canvas size)/64 (original canvas size)
-// 100 px * canvas.width/64 * 15
+        var canvasSize = min(window.innerHeight - rect.top, container.clientWidth);
+
+        canvas.width = squares * Math.floor(canvasSize / squares); //max width
+        canvas.height = squares * Math.floor(canvasSize / squares);  //set the heigh to the width
+
+        size = Math.floor(canvasSize / squares);
+
+        redraw();
+    }
+
+    //Initial call
+    respondCanvas();
+
+    // 100 px (original text size) * 32 (new canvas size)/64 (original canvas size)
+    // 100 px * canvas.width/64 * 15
+})()
