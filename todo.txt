@@ -1,7 +1,6 @@
-3. Push the app to Heroku
-    - set up DNS 
-4. mongo database - add this to store top scores
-5. revise express app to store the database
-6. when you die, ask for the player name and then send their name and score to the database.
-7. Add tests
+
+5. mongo database - add this to store top scores
+6. revise express app to store the database
+7. when you die, ask for the player name and then send their name and score to the database.
+8. Add tests
 
