@@ -7,8 +7,6 @@ app.use(express.static('public'));
 
 app.use(bodyParser.json())
 
-console.log("MONGO_PASSWORD:", process.env.MONGO_PASSWORD);
-
 mongoose.connect("mongodb+srv://cluster0.hdhvv.mongodb.net/", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
