@@ -8,12 +8,13 @@ app.use(express.static('public'));
 app.use(bodyParser.json())
 
 
-mongoose.connect(`mongodb+srv://cluster0.hdhvv.mongodb.net/scores`, {
+mongoose.connect("mongodb+srv://cluster0.hdhvv.mongodb.net/", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     pass: process.env.MONGO_PASSWORD,
-    user: "admin-rebecca"
-})
+    user: "admin-rebecca",
+    dbName: 'scores'
+});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
