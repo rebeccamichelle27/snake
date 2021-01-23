@@ -8,7 +8,7 @@ app.use(express.static('public'));
 app.use(bodyParser.json())
 
 
-mongoose.connect('mongodb://localhost/scores', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(`mongodb+srv://admin-rebecca:${process.env.MONGO_PASSWORD}@cluster0.hdhvv.mongodb.net/scores`, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
