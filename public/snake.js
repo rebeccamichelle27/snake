@@ -1,5 +1,7 @@
-var audio = new Audio('/MachinimaSound.com_-_The_Arcade.mp3');
-audio.play();
+let musicAudio = new Audio('/MachinimaSound.com_-_The_Arcade.mp3');
+musicAudio.loop = true;
+
+var coinAudio = new Audio('/coin.mp3');
 
 // Constants
 const UP = "UP";
@@ -120,8 +122,7 @@ function step() {
         console.log("gobble!");
         [appleX, appleY] = randomCoord();
         score += 100;
-        var audio = new Audio('/coin.mp3');
-        audio.play();
+        coinAudio.play();
         clearInterval(timer);
         if (!debugging) {
             timer = setInterval(step, speed);
@@ -299,15 +300,12 @@ function redraw() {
     } else if (gameState === "gameover") {
         gameOver();
     }
-
-
 }
-
-
 
 function handleKey(e) {
     e.preventDefault();
     if (e.code === "Enter" && gameState === "title") {
+        musicAudio.play();
         restartGame();
         return
     } else if (e.code === "Enter" && gameState === "gameover") {

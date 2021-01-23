@@ -3,10 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const app = express()
-app.use(express.static('public', {
-    acceptRanges: false
-}));
-
+app.use(express.static('public'));
 app.use(bodyParser.json())
 
 mongoose.connect("mongodb+srv://cluster0.hdhvv.mongodb.net/", {
