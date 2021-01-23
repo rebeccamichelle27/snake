@@ -60,7 +60,7 @@ function sendScore(name) {
         score: score
     }
 
-    fetch('/score', {
+    return fetch('/score', {
         method: 'POST',
         body: JSON.stringify(nameScore),
         headers: {
@@ -297,7 +297,7 @@ function redraw() {
         showTitle();
     } else if (gameState === "playing") {
         drawGame();
-    } else if (gameState === "gameover") {
+    } else if (gameState === "gameover" || gameState === "submitting score") {
         gameOver();
     }
 }
@@ -309,8 +309,11 @@ function handleKey(e) {
         restartGame();
         return
     } else if (e.code === "Enter" && gameState === "gameover") {
-        gameState = "title";
-        sendScore(name);
+        gameState = "submitting score";
+        sendScore(name).then(() => {
+            gameState = "title";
+            redraw();
+        })
         redraw();
         return
     } else if (gameState === "gameover") {
