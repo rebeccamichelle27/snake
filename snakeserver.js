@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const app = express()
-app.use(express.static('public'));
+app.use(express.static('public', {
+    acceptRanges: false
+}));
 
 app.use(bodyParser.json())
 
