@@ -1,4 +1,27 @@
-import { Coord, Snake, SnakePart, UP, DOWN, LEFT, RIGHT } from "./snake-game.js"
+import { BufferedInput, Coord, Snake, SnakePart, UP, DOWN, LEFT, RIGHT } from "./snake-game.js"
+
+describe(BufferedInput, () => {
+    test("initial direction", () => {
+        let input = new BufferedInput(RIGHT);
+
+        expect(input.popDirection()).toBe(RIGHT);
+    });
+
+    test("popping multiple times leaves at least one direction", () => {
+        let input = new BufferedInput(RIGHT);
+
+        expect(input.popDirection()).toBe(RIGHT);
+        expect(input.popDirection()).toBe(RIGHT);
+    });
+
+    test("pushing directions", () => {
+        let input = new BufferedInput(RIGHT);
+
+        expect(input.popDirection()).toBe(RIGHT);
+        input.pushDirection(LEFT);
+        expect(input.popDirection()).toBe(LEFT);
+    });
+})
 
 describe(Coord, () => {
     test("copy() should work", () => {
