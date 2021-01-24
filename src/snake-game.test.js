@@ -5,7 +5,7 @@ describe(Coord, () => {
         const original = new Coord(2, 3);
         const copy = original.copy();
 
-        expect(copy.x).toBe(original.y);
+        expect(copy.x).toBe(original.x);
         expect(copy.y).toBe(original.y);
 
         // the original coord and the copy should not
@@ -20,7 +20,7 @@ describe(Snake, () => {
         const appleCoord = new Coord(5, 0);
 
         expect(snake.parts).toEqual([
-            new SnakePart(new Coord(8, 9), RIGHT),
+            new SnakePart(new Coord(0, 0), RIGHT),
             new SnakePart(new Coord(1, 0), RIGHT),
             new SnakePart(new Coord(2, 0), RIGHT),
             new SnakePart(new Coord(3, 0), RIGHT)
