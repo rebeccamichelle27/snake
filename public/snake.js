@@ -4,11 +4,12 @@ musicAudio.loop = true;
 var coinAudio = new Audio('/coin.mp3');
 
 // Constants
+
+// All the directions
 const UP = "UP";
 const DOWN = "DOWN";
 const LEFT = "LEFT";
 const RIGHT = "RIGHT";
-
 
 //Get the canvas & context
 const canvas = document.getElementById('respondCanvas');
@@ -153,24 +154,24 @@ function showTitle() {
         ctx.fillStyle = '#4BF542';
         ctx.font = scaledFont(50);
         ctx.textAlign = 'center';
-        ctx.fillText("SNAKE", canvas.width / 2, 150);
+        ctx.fillText("SNAKE", canvas.width / 2, canvas.height * 0.15);
         ctx.font = scaledFont(40);
         ctx.fillStyle = 'white';
         ctx.textAlign = 'center';
-        ctx.fillText("HIGH SCORES", canvas.width / 2, 225);
+        ctx.fillText("HIGH SCORES", canvas.width / 2, canvas.height * 0.25);
 
         for (let i = 0; i < scores.length; i++) {
             ctx.textAlign = 'left';
             ctx.font = scaledFont(30);
-            ctx.fillText(`${scores[i].name}`, canvas.width / 3, 300 + 35 * i)
+            ctx.fillText(`${scores[i].name}`, canvas.width / 3, canvas.height * (0.32 + i * 0.04))
             ctx.textAlign = 'right'
-            ctx.fillText(`${scores[i].score}`, canvas.width / 1.5, 300 + 35 * i)
+            ctx.fillText(`${scores[i].score}`, canvas.width / 1.5, canvas.height * (0.32 + i * 0.04))
 
         }
         ctx.fillStyle = '#4BF542'
         ctx.font = scaledFont(30);
         ctx.textAlign = 'center';
-        ctx.fillText("Press ENTER to play", canvas.width / 2, (canvas.height / 2) + 300);
+        ctx.fillText("Press ENTER to play", canvas.width / 2, canvas.height * 0.80);
     });
 }
 
@@ -250,7 +251,7 @@ function drawGame() {
     ctx.fillStyle = 'white';
     ctx.font = scaledFont(30);
     ctx.textAlign = 'center';
-    ctx.fillText("Score: " + score, canvas.width / 2, 30);
+    ctx.fillText("Score: " + score, canvas.width / 2, canvas.height * 0.03);
 }
 
 function gameOver() {
@@ -270,17 +271,17 @@ function gameOver() {
     ctx.fillStyle = 'white';
     ctx.font = scaledFont(30);
     ctx.textAlign = 'center';
-    ctx.fillText("Score: " + score, canvas.width / 2, 30);
+    ctx.fillText("Score: " + score, canvas.width / 2, canvas.height * 0.03);
 
     ctx.fillStyle = 'white';
     ctx.font = scaledFont(30);
     ctx.textAlign = 'center';
-    ctx.fillText("Enter your name:", canvas.width / 2, (canvas.height / 2) + 100);
+    ctx.fillText("Enter your name:", canvas.width / 2, canvas.height * 0.60);
 
     ctx.fillStyle = 'white';
     ctx.font = scaledFont(30);
     ctx.textAlign = 'center';
-    ctx.fillText(name + "▯", canvas.width / 2, (canvas.height / 2) + 150);
+    ctx.fillText(name + "▯", canvas.width / 2, canvas.height * 0.67);
 
     return;
 }
@@ -292,7 +293,6 @@ function drawSprite(spriteCol, spriteRow, coord) {
 function redraw() {
 
     //using three states
-
     if (gameState === "title") {
         showTitle();
     } else if (gameState === "playing") {
@@ -413,9 +413,6 @@ function debugGame() {
     appleY = 3;
     redraw();
 }
-
-
-
 
 
 
