@@ -317,9 +317,11 @@ function handleKey(e) {
         redraw();
         return
     } else if (gameState === "gameover") {
-        // cheap attempt to ignore non-printable keys
-        // (e.g. Shift, Alt, CapsLock)
-        if (e.key.length == 1) {
+        // only allow 15 characters max.
+        //
+        // also, cheap attempt to ignore non-printable keys
+        // (e.g. Shift, Alt, CapsLock).
+        if (name.length < 15 && e.key.length == 1) {
             name += e.key;
         }
         if (e.key === "Backspace") {
