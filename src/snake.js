@@ -1,41 +1,5 @@
-const UP = "UP";
-const DOWN = "DOWN";
-const LEFT = "LEFT";
-const RIGHT = "RIGHT";
-
-// This represents a queue of user directional input.
-class BufferedInput {
-    constructor(initialDirection) {
-        this.directionQueue = [initialDirection];
-    }
-
-    popDirection() {
-        if (this.directionQueue.length > 1) {
-            this.directionQueue.shift();
-        }
-
-        return this.directionQueue[0];
-    }
-
-    pushDirection(direction) {
-        this.directionQueue.push(direction);
-    }
-}
-
-class Coord {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    copy() {
-        return new Coord(this.x, this.y);
-    }
-
-    equals(other) {
-        return this.x === other.x && this.y === other.y;
-    }
-}
+import { Coord } from "./coord.js"
+import { UP, DOWN, LEFT, RIGHT } from "./direction.js"
 
 class SnakePart {
     constructor(coord, direction) {
@@ -101,9 +65,6 @@ class Snake {
 }
 
 export {
-    UP, DOWN, LEFT, RIGHT,
-    Coord,
     SnakePart,
-    Snake,
-    BufferedInput
+    Snake
 }
