@@ -6,15 +6,18 @@
   <link rel="icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Snake!" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Sniglet:wght@400;800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/index.css" />
   <title>Snake!</title>
 </head>
 
 <body>
-  <img id="img" src="/logo.svg" />
+  <img hidden id="spriteSheet" src="snake-graphics.png" />
   <canvas id="canvas"></canvas>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <script type="module" src="/dist/index.js"></script>
+  <script type="module" src="/dist/game.js"></script>
 </body>
 
 </html>
