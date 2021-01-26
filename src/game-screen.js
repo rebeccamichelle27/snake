@@ -2,28 +2,30 @@ import { Screen } from './screen.js'
 import { UP, DOWN, LEFT, RIGHT } from './direction.js'
 
 class GameScreen extends Screen {
-    constructor(snake) {
-        super();
+    constructor(width, height, snake, applecoord) {
+        super(width, height);
         this.snake = snake;
+        this.applecoord = applecoord;
+        this.score = 0;
     }
 
-    draw(ctx, width, height, appleCoord) {
+    draw(ctx) {
         let spriteSheet = document.getElementById("spriteSheet");
 
         // TODO: clean this up
-        const size = width / 15;
+        const tileSize = this.width / 15;
 
         // helper to draw from sprite sheet
         function drawSprite(spriteCol, spriteRow, coord) {
-            ctx.drawImage(spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * size, coord.y * size, size, size);
+            ctx.drawImage(spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * tileSize, coord.y * tileSize, tileSize, tileSize);
         }
 
         // clear canvas
         ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, width, height);
+        ctx.fillRect(0, 0, this.width, this.height);
 
         // draw apple
-        ctx.drawImage(spriteSheet, 0 * 64, 3 * 64, 64, 64, appleCoord.x * size, appleCoord.y * size, size, size);
+        ctx.drawImage(spriteSheet, 0 * 64, 3 * 64, 64, 64, this.applecoord.x * tileSize, this.applecoord.y * tileSize, tileSize, tileSize);
 
         // draw tail of snake
         let tail = this.snake.parts[0];
@@ -89,12 +91,10 @@ class GameScreen extends Screen {
         }
 
         // draw score
-        const score = 1000; // TODO: fix this variable
-
         ctx.fillStyle = 'white';
-        ctx.font = this._scaledFont(30, width);
+        ctx.font = this._scaledFont(30);
         ctx.textAlign = 'center';
-        ctx.fillText("Score: " + score, width / 2, height * 0.03);
+        ctx.fillText("Score: " + this.score, this.width / 2, this.height * 0.03);
 
     }
 }

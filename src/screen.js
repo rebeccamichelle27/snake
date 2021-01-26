@@ -1,8 +1,13 @@
 // Abstract screen class
 class Screen {
-    _scaledFont(scale, width) {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    _scaledFont(scale) {
         // return originalSize * (canvas.width / (64 * 15)) + "px sans-serif";
-        return scale * (width / (64 * 15)) + "px Sniglet";
+        return scale * (this.width / (64 * 15)) + "px Sniglet";
     }
 }
 
