@@ -1,10 +1,12 @@
-body {
+/* body {
   padding: 0px;
   margin: 0px;
-}
 
-#main {
-  display:block;
-  width:100%;
-  padding: 0px;
+} */
+
+#canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

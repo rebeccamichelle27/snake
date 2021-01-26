@@ -8,13 +8,18 @@ class SnakePart {
     }
 }
 
+// Snake encapsulates the rules/logic for the snake game.
 class Snake {
     constructor() {
+        // dimensions as number of tiles.
+        // hard-coded to a square of 15x15 tiles for now.
         this.width = 15;
         this.height = 15;
+
         this.reset();
     }
 
+    // reset the snake game
     reset() {
         this.alive = true;
         this.score = 0;

@@ -27,3 +27,7 @@ class ScoreService {
         return response.json();
     }
 }
+
+export {
+    ScoreService
+}

@@ -1,12 +1,13 @@
 import { Screen } from './screen.js'
-import { UP, DOWN, LEFT, RIGHT } from './direction.js'
-import { BufferedInput } from './buffered-input.js'
+import { UP, DOWN, LEFT, RIGHT } from '../direction.js'
+import { BufferedInput } from '../buffered-input.js'
 
 class GameScreen extends Screen {
-    constructor(ctx, width, height, snake, coinAudio) {
-        super(ctx, width, height);
+    constructor(ctx, snake, coinAudio, spriteSheet) {
+        super(ctx);
         this.snake = snake;
         this.coinAudio = coinAudio;
+        this.spriteSheet = spriteSheet;
     }
 
     start() {
@@ -16,37 +17,48 @@ class GameScreen extends Screen {
         // reset input buffer
         this.bufferedInput = new BufferedInput(RIGHT);
 
+        // draw first frame
         this.draw();
 
         // start game loop
+        this.startLoop();
+    }
+
+    // starts the game loop
+    startLoop() {
         this.interval = setInterval(() => {
-            let ateApple = this.snake.move(this.bufferedInput.popDirection());
-            if (ateApple) {
-                this.coinAudio.play();
-            }
+            this.tick();
+        }, 200);
+    }
 
-            this.draw();
+    // one tick of the game loop
+    tick() {
+        // move snake, check if we ate an apple
+        let ateApple = this.snake.move(this.bufferedInput.popDirection());
+        if (ateApple) {
+            this.coinAudio.play();
+        }
 
-            // If we're dead, go to gameover screen.
-            if (!this.snake.alive) {
-                this.onNextScreen();
-            }
-        }, 150);
+        // draw frame
+        this.draw();
+
+        // If we're dead, go to gameover screen.
+        if (!this.snake.alive) {
+            this.onNextScreen();
+        }
     }
 
     stop() {
+        // stop game loop
         clearInterval(this.interval);
     }
 
     draw() {
-        let spriteSheet = document.getElementById("spriteSheet");
-
-        // TODO: clean this up
-        const tileSize = this.width / 15;
+        const tileSize = this.width / this.snake.width;
 
         // helper to draw from sprite sheet
         const drawSprite = (spriteCol, spriteRow, coord) => {
-            this.ctx.drawImage(spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * tileSize, coord.y * tileSize, tileSize, tileSize);
+            this.ctx.drawImage(this.spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * tileSize, coord.y * tileSize, tileSize, tileSize);
         }
 
         // clear canvas

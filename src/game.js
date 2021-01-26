@@ -1,55 +1,58 @@
-import { TitleScreen } from './title-screen.js'
-import { GameScreen } from './game-screen.js'
-import { GameOverScreen } from './gameover-screen.js'
+import { TitleScreen } from './screens/title-screen.js'
+import { GameScreen } from './screens/game-screen.js'
+import { GameOverScreen } from './screens/gameover-screen.js'
 import { Snake } from './snake.js'
-import { BufferedInput } from './buffered-input.js'
-import { UP, DOWN, LEFT, RIGHT } from './direction.js'
-import { Coord } from './coord.js';
+import { MockScoreService as ScoreService } from './mock-score-service.js'
+// import { ScoreService } from './score-service.js'
 
 const numSquares = 15;
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(() => resolve(null), ms));
+function min(a, b) { return a < b ? a : b; }
+
+// calculate best-fit dimensions for the window.
+// assume square canvas dimensions for now.
+function bestFitSize() {
+    const canvasSize = min(window.innerHeight, window.innerWidth);
+    return numSquares * Math.floor(canvasSize / numSquares);
+}
+
+function goFullScreen() {
+    if (canvas.requestFullScreen)
+        canvas.requestFullScreen();
+    else if (canvas.webkitRequestFullScreen)
+        canvas.webkitRequestFullScreen();
+    else if (canvas.mozRequestFullScreen)
+        canvas.mozRequestFullScreen();
 }
 
 (async () => {
+    // wait for font to load.
     await document.fonts.load("12px Sniglet");
 
-    let squareSize;
+    // sprite sheet
+    const spriteSheet = document.getElementById("spriteSheet");
 
     // audio
     const coinAudio = new Audio('/coin.mp3');
     const musicAudio = new Audio('/MachinimaSound.com_-_The_Arcade.mp3');
     musicAudio.loop = true;
 
+    // canvas
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const canvasContainer = canvas.parentNode;
 
+    // score service
+    const scoreService = new ScoreService();
+
+    // snake, screens
     const snake = new Snake();
-
-    let width = 100;
-    let height = 100;
-
-    let scores = [{ name: "Rebecca", score: 1000 }];
-    const scoreService = {
-        getScores: async () => {
-            await delay(2000);
-            return Promise.resolve(scores);
-        },
-        sendScore: (name, score) => {
-            scores.push({ name, score });
-            return Promise.resolve(null);
-        }
-    }
-
-    const titleScreen = new TitleScreen(ctx, width, height, scoreService, musicAudio);
-    const gameScreen = new GameScreen(ctx, width, height, snake, coinAudio);
-    const gameOverScreen = new GameOverScreen(ctx, width, height, gameScreen, scoreService);
+    const titleScreen = new TitleScreen(ctx, scoreService, musicAudio);
+    const gameScreen = new GameScreen(ctx, snake, coinAudio, spriteSheet);
+    const gameOverScreen = new GameOverScreen(ctx, gameScreen, scoreService);
     let activeScreen = titleScreen;
-
     const allScreens = [titleScreen, gameScreen, gameOverScreen];
 
+    // cycle through screens
     function onNextScreen() {
         activeScreen.stop();
 
@@ -57,62 +60,40 @@ function delay(ms) {
             activeScreen = gameScreen;
         } else if (activeScreen === gameScreen) {
             activeScreen = gameOverScreen;
-
         } else {
             activeScreen = titleScreen;
         }
 
         activeScreen.start();
-        activeScreen.draw();
     }
     for (screen of allScreens) {
         screen.onNextScreen = onNextScreen;
     }
 
+    // forward key events to active screen
     function handleKey(e) {
-        e.preventDefault();
         activeScreen.handleKey(e);
     }
     document.addEventListener('keydown', handleKey);
 
+    // activate current screen
     activeScreen.start();
 
-    function min(a, b) { return a < b ? a : b; }
-
-    window.addEventListener('resize', respondCanvas);
-    function respondCanvas() {
-
-        // calculate best-fit dimensions for the window.
-        // assume square canvas dimensions for now.
-        const rect = canvas.getBoundingClientRect();
-        const canvasSize = min(window.innerHeight - rect.top, canvasContainer.clientWidth);
-        width = height = numSquares * Math.floor(canvasSize / numSquares);
-
+    // handle window resizing
+    window.addEventListener('resize', resizeCanvas);
+    function resizeCanvas() {
         // update canvas dimensions
-        canvas.width = width;
-        canvas.height = height;
+        const size = bestFitSize();
+        canvas.width = canvas.height = size;
 
         // update screen dimensions
         for (screen of allScreens) {
-            screen.width = width;
-            screen.height = height;
+            screen.width = screen.height = size;
         }
 
         activeScreen.draw();
-
-        // titleScreen.draw(ctx, [
-        //     { name: "Rebecca", score: "1000000" },
-        //     { name: "Rebecca", score: "1000000" },
-        //     { name: "Rebecca", score: "1000000" },
-        //     { name: "Rebecca", score: "1000000" },
-        // ]);
-
-        // gameOverScreen.draw(ctx);
-
-
     }
 
-    //Initial call
-    respondCanvas();
+    // set initial canvas size
+    resizeCanvas();
 })()
-

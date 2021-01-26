@@ -1,9 +1,8 @@
 import { Screen } from './screen.js'
 
 class GameOverScreen extends Screen {
-
-    constructor(ctx, width, height, gameScreen, scoreService) {
-        super(ctx, width, height);
+    constructor(ctx, gameScreen, scoreService) {
+        super(ctx);
         this.gameScreen = gameScreen;
         this.name = "";
         this.scoreService = scoreService;
@@ -13,6 +12,8 @@ class GameOverScreen extends Screen {
         this.name = "";
         this.draw();
     }
+
+    stop() { }
 
     draw() {
         this.gameScreen.draw(this.ctx)

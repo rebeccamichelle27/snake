@@ -1,8 +1,8 @@
 import { Screen } from './screen.js'
 
 class TitleScreen extends Screen {
-    constructor(ctx, width, height, scoreService, musicAudio) {
-        super(ctx, width, height);
+    constructor(ctx, scoreService, musicAudio) {
+        super(ctx);
         this.scoreService = scoreService;
         this.musicAudio = musicAudio;
     }
