@@ -1,5 +1,7 @@
 class ScoreService {
-    constructor() { }
+    constructor() {
+        this.lastSend = Promise.resolve();
+    }
 
     sendScore(name, score) {
         const nameScore = {
@@ -7,7 +9,9 @@ class ScoreService {
             score: score
         }
 
-        return fetch('/score', {
+        // keep track of last submission,
+        // as we'll want to wait for it to complete before we show the new scores.
+        this.lastSend = fetch('/score', {
             method: 'POST',
             body: JSON.stringify(nameScore),
             headers: {
@@ -17,6 +21,9 @@ class ScoreService {
     }
 
     async getScores() {
+        // wait for any in-flight score submissions
+        await this.lastSend;
+
         let response = await fetch('/score', {
             method: 'GET',
             headers: {
