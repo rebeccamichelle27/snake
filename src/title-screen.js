@@ -1,17 +1,29 @@
 import { Screen } from './screen.js'
 
 class TitleScreen extends Screen {
-    constructor(ctx, width, height) {
+    constructor(ctx, width, height, scoreService, musicAudio) {
         super(ctx, width, height);
+        this.scoreService = scoreService;
+        this.musicAudio = musicAudio;
     }
 
-    start() {
+    async start() {
+        this.active = true;
+        this.scores = null;
         this.draw();
+
+        // get scores and redraw if we're still the active screen.
+        this.scores = await this.scoreService.getScores();
+        if (this.active) {
+            this.draw();
+        }
+    }
+
+    stop() {
+        this.active = false;
     }
 
     draw() {
-        const scores = []; // TODO
-
         const maxNumScores = 10;
 
         this.ctx.fillStyle = 'black';
@@ -26,14 +38,19 @@ class TitleScreen extends Screen {
         this.ctx.textAlign = 'center';
         this.ctx.fillText("HIGH SCORES", this.width / 2, this.height * 0.25);
 
-
-        for (let i = 0; i < maxNumScores && i < scores.length; i++) {
-            this.ctx.textAlign = 'left';
+        if (this.scores === null) {
+            this.ctx.textAlign = 'center';
             this.ctx.font = this._scaledFont(30);
-            this.ctx.fillText(`${scores[i].name}`, this.width / 3, this.height * (0.32 + i * 0.04))
-            this.ctx.textAlign = 'right'
-            this.ctx.fillText(`${scores[i].score}`, this.width / 1.5, this.height * (0.32 + i * 0.04))
+            this.ctx.fillText("Loading . . .", this.width / 2, this.height * 0.32)
+        } else {
+            for (let i = 0; i < maxNumScores && i < this.scores.length; i++) {
+                this.ctx.textAlign = 'left';
+                this.ctx.font = this._scaledFont(30);
+                this.ctx.fillText(`${this.scores[i].name}`, this.width / 3, this.height * (0.32 + i * 0.04))
+                this.ctx.textAlign = 'right'
+                this.ctx.fillText(`${this.scores[i].score}`, this.width / 1.5, this.height * (0.32 + i * 0.04))
 
+            }
         }
         this.ctx.fillStyle = '#4BF542'
         this.ctx.font = this._scaledFont(30);
@@ -43,6 +60,7 @@ class TitleScreen extends Screen {
 
     handleKey(e) {
         if (e.key === "Enter") {
+            this.musicAudio.play();
             this.onNextScreen();
         }
     }

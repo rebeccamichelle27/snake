@@ -1,14 +1,10 @@
-#img {
-  display: block;
-  margin: auto;
-  height: 128px;
-  width: 128px;
-  padding: 2rem;
+body {
+  padding: 0px;
+  margin: 0px;
 }
 
-#canvas {
-  display: block;
-  margin: 2rem auto;
-  width: 540px;
-  height: 540px;
+#main {
+  display:block;
+  width:100%;
+  padding: 0px;
 }

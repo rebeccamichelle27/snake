@@ -2,11 +2,11 @@ import { Screen } from './screen.js'
 import { UP, DOWN, LEFT, RIGHT } from './direction.js'
 import { BufferedInput } from './buffered-input.js'
 
-
 class GameScreen extends Screen {
-    constructor(ctx, width, height, snake) {
+    constructor(ctx, width, height, snake, coinAudio) {
         super(ctx, width, height);
         this.snake = snake;
+        this.coinAudio = coinAudio;
     }
 
     start() {
@@ -16,13 +16,19 @@ class GameScreen extends Screen {
         // reset input buffer
         this.bufferedInput = new BufferedInput(RIGHT);
 
+        this.draw();
+
         // start game loop
         this.interval = setInterval(() => {
-            let alive = this.snake.move(this.bufferedInput.popDirection());
+            let ateApple = this.snake.move(this.bufferedInput.popDirection());
+            if (ateApple) {
+                this.coinAudio.play();
+            }
+
             this.draw();
 
             // If we're dead, go to gameover screen.
-            if (!alive) {
+            if (!this.snake.alive) {
                 this.onNextScreen();
             }
         }, 150);

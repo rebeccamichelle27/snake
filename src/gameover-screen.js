@@ -2,10 +2,16 @@ import { Screen } from './screen.js'
 
 class GameOverScreen extends Screen {
 
-    constructor(ctx, width, height, gameScreen) {
+    constructor(ctx, width, height, gameScreen, scoreService) {
         super(ctx, width, height);
         this.gameScreen = gameScreen;
         this.name = "";
+        this.scoreService = scoreService;
+    }
+
+    start() {
+        this.name = "";
+        this.draw();
     }
 
     draw() {
@@ -38,7 +44,7 @@ class GameOverScreen extends Screen {
 
     handleKey(e) {
         if (e.key === "Enter") {
-            // TODO: submit score
+            this.scoreService.sendScore(this.name, this.gameScreen.snake.score);
             this.onNextScreen();
             return;
         }

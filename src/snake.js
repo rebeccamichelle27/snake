@@ -16,6 +16,7 @@ class Snake {
     }
 
     reset() {
+        this.alive = true;
         this.score = 0;
         this.parts = [
             new SnakePart(new Coord(0, 0), RIGHT),
@@ -26,8 +27,9 @@ class Snake {
         this.appleCoord = this.randomAppleCoord();
     }
 
-    // Move the snake in the given direction. (TODO: describe appleCoord argument)
-    // If the snake is still alive, returns true.
+    // Move the snake in the given direction.
+    // If the snake ate an apple, returns true.
+    // If the snake dies, the alive property to false.
     move(direction) {
         // update snake position
         let head = this.parts[this.parts.length - 1].coord.copy();
@@ -48,6 +50,7 @@ class Snake {
             if (this.parts[i].coord.x === head.x && this.parts[i].coord.y === head.y) {
                 // remove tip of tail
                 this.parts.shift();
+                this.alive = false;
                 return false;
             }
         }
@@ -56,6 +59,7 @@ class Snake {
         if (head.x >= this.width || head.x < 0 || head.y >= this.height || head.y < 0) {
             // remove tip of tail
             this.parts.shift();
+            this.alive = false;
             return false
         }
 
@@ -63,12 +67,13 @@ class Snake {
         if (head.equals(this.appleCoord)) {
             this.appleCoord = this.randomAppleCoord();
             this.score += 100;
+            return true;
         } else {
             // remove tip of tail
             this.parts.shift();
         }
 
-        return true;
+        return false;
     }
 
     // Generate a random Coord unoccupied by the snake.

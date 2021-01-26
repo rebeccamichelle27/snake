@@ -8,10 +8,19 @@ import { Coord } from './coord.js';
 
 const numSquares = 15;
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(() => resolve(null), ms));
+}
+
 (async () => {
     await document.fonts.load("12px Sniglet");
 
     let squareSize;
+
+    // audio
+    const coinAudio = new Audio('/coin.mp3');
+    const musicAudio = new Audio('/MachinimaSound.com_-_The_Arcade.mp3');
+    musicAudio.loop = true;
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -22,9 +31,21 @@ const numSquares = 15;
     let width = 100;
     let height = 100;
 
-    const titleScreen = new TitleScreen(ctx, width, height);
-    const gameScreen = new GameScreen(ctx, width, height, snake);
-    const gameOverScreen = new GameOverScreen(ctx, width, height, gameScreen);
+    let scores = [{ name: "Rebecca", score: 1000 }];
+    const scoreService = {
+        getScores: async () => {
+            await delay(2000);
+            return Promise.resolve(scores);
+        },
+        sendScore: (name, score) => {
+            scores.push({ name, score });
+            return Promise.resolve(null);
+        }
+    }
+
+    const titleScreen = new TitleScreen(ctx, width, height, scoreService, musicAudio);
+    const gameScreen = new GameScreen(ctx, width, height, snake, coinAudio);
+    const gameOverScreen = new GameOverScreen(ctx, width, height, gameScreen, scoreService);
     let activeScreen = titleScreen;
 
     const allScreens = [titleScreen, gameScreen, gameOverScreen];
@@ -55,11 +76,6 @@ const numSquares = 15;
     document.addEventListener('keydown', handleKey);
 
     activeScreen.start();
-
-    // let timer = setInterval(step, 150);
-    // function step() {
-
-    // }
 
     function min(a, b) { return a < b ? a : b; }
 
