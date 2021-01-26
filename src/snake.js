@@ -12,18 +12,23 @@ class Snake {
     constructor() {
         this.width = 15;
         this.height = 15;
+        this.reset();
+    }
 
+    reset() {
+        this.score = 0;
         this.parts = [
             new SnakePart(new Coord(0, 0), RIGHT),
             new SnakePart(new Coord(1, 0), RIGHT),
             new SnakePart(new Coord(2, 0), RIGHT),
             new SnakePart(new Coord(3, 0), RIGHT)
         ];
+        this.appleCoord = this.randomAppleCoord();
     }
 
     // Move the snake in the given direction. (TODO: describe appleCoord argument)
     // If the snake is still alive, returns true.
-    move(direction, appleCoord) {
+    move(direction) {
         // update snake position
         let head = this.parts[this.parts.length - 1].coord.copy();
 
@@ -55,12 +60,39 @@ class Snake {
         }
 
         //Determines if the snake hits the apple
-        if (!head.equals(appleCoord)) {
+        if (head.equals(this.appleCoord)) {
+            this.appleCoord = this.randomAppleCoord();
+            this.score += 100;
+        } else {
             // remove tip of tail
             this.parts.shift();
         }
 
         return true;
+    }
+
+    // Generate a random Coord unoccupied by the snake.
+    randomAppleCoord() {
+        const appleCoord = new Coord(0, 0);
+
+        while (true) {
+            let conflict = false;
+            appleCoord.x = Math.floor(Math.random() * this.width);
+            appleCoord.y = Math.floor(Math.random() * this.height);
+
+            for (let segment of this.parts) {
+                if (segment.coord.x === appleCoord.x && segment.coord.y === appleCoord.y) {
+                    conflict = true;
+                    break;
+                }
+            }
+
+            if (!conflict) {
+                break;
+            }
+        }
+
+        return appleCoord;
     }
 }
 

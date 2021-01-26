@@ -5,7 +5,7 @@ import { Coord } from "./coord.js"
 describe(Snake, () => {
     test("movement", () => {
         const snake = new Snake();
-        const appleCoord = new Coord(5, 0);
+        snake.appleCoord = new Coord(5, 0);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(0, 0), RIGHT),
@@ -14,7 +14,7 @@ describe(Snake, () => {
             new SnakePart(new Coord(3, 0), RIGHT)
         ]);
 
-        expect(snake.move(RIGHT, appleCoord)).toBe(true);
+        expect(snake.move(RIGHT)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(1, 0), RIGHT),
@@ -23,7 +23,7 @@ describe(Snake, () => {
             new SnakePart(new Coord(4, 0), RIGHT)
         ]);
 
-        expect(snake.move(RIGHT, appleCoord)).toBe(true);
+        expect(snake.move(RIGHT)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(1, 0), RIGHT),
@@ -33,7 +33,7 @@ describe(Snake, () => {
             new SnakePart(new Coord(5, 0), RIGHT)
         ]);
 
-        expect(snake.move(DOWN, appleCoord)).toBe(true);
+        expect(snake.move(DOWN)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(2, 0), RIGHT),
@@ -43,7 +43,7 @@ describe(Snake, () => {
             new SnakePart(new Coord(5, 1), DOWN)
         ]);
 
-        expect(snake.move(LEFT, appleCoord)).toBe(true);
+        expect(snake.move(LEFT)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(3, 0), RIGHT),
@@ -53,7 +53,7 @@ describe(Snake, () => {
             new SnakePart(new Coord(4, 1), LEFT)
         ]);
 
-        expect(snake.move(DOWN, appleCoord)).toBe(true);
+        expect(snake.move(DOWN)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(4, 0), RIGHT),
@@ -64,7 +64,7 @@ describe(Snake, () => {
         ]);
 
 
-        expect(snake.move(RIGHT, appleCoord)).toBe(true);
+        expect(snake.move(RIGHT)).toBe(true);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(5, 0), RIGHT),
@@ -76,7 +76,7 @@ describe(Snake, () => {
 
         // now bite ourself
 
-        expect(snake.move(UP, appleCoord)).toBe(false);
+        expect(snake.move(UP)).toBe(false);
 
         expect(snake.parts).toEqual([
             new SnakePart(new Coord(5, 1), DOWN),

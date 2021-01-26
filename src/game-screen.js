@@ -1,31 +1,54 @@
 import { Screen } from './screen.js'
 import { UP, DOWN, LEFT, RIGHT } from './direction.js'
+import { BufferedInput } from './buffered-input.js'
+
 
 class GameScreen extends Screen {
-    constructor(width, height, snake, applecoord) {
-        super(width, height);
+    constructor(ctx, width, height, snake) {
+        super(ctx, width, height);
         this.snake = snake;
-        this.applecoord = applecoord;
-        this.score = 0;
     }
 
-    draw(ctx) {
+    start() {
+        // reset the game
+        this.snake.reset();
+
+        // reset input buffer
+        this.bufferedInput = new BufferedInput(RIGHT);
+
+        // start game loop
+        this.interval = setInterval(() => {
+            let alive = this.snake.move(this.bufferedInput.popDirection());
+            this.draw();
+
+            // If we're dead, go to gameover screen.
+            if (!alive) {
+                this.onNextScreen();
+            }
+        }, 150);
+    }
+
+    stop() {
+        clearInterval(this.interval);
+    }
+
+    draw() {
         let spriteSheet = document.getElementById("spriteSheet");
 
         // TODO: clean this up
         const tileSize = this.width / 15;
 
         // helper to draw from sprite sheet
-        function drawSprite(spriteCol, spriteRow, coord) {
-            ctx.drawImage(spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * tileSize, coord.y * tileSize, tileSize, tileSize);
+        const drawSprite = (spriteCol, spriteRow, coord) => {
+            this.ctx.drawImage(spriteSheet, spriteCol * 64, spriteRow * 64, 64, 64, coord.x * tileSize, coord.y * tileSize, tileSize, tileSize);
         }
 
         // clear canvas
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillRect(0, 0, this.width, this.height);
 
         // draw apple
-        ctx.drawImage(spriteSheet, 0 * 64, 3 * 64, 64, 64, this.applecoord.x * tileSize, this.applecoord.y * tileSize, tileSize, tileSize);
+        drawSprite(0, 3, this.snake.appleCoord);
 
         // draw tail of snake
         let tail = this.snake.parts[0];
@@ -91,11 +114,28 @@ class GameScreen extends Screen {
         }
 
         // draw score
-        ctx.fillStyle = 'white';
-        ctx.font = this._scaledFont(30);
-        ctx.textAlign = 'center';
-        ctx.fillText("Score: " + this.score, this.width / 2, this.height * 0.03);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = this._scaledFont(30);
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText("Score: " + this.snake.score, this.width / 2, this.height * 0.03);
 
+    }
+
+    handleKey(e) {
+        let direction;
+        if (e.code === "ArrowUp") {
+            direction = UP;
+        } else if (e.code === "ArrowDown") {
+            direction = DOWN;
+        } else if (e.code === "ArrowLeft") {
+            direction = LEFT;
+        } else if (e.code === "ArrowRight") {
+            direction = RIGHT;
+        } else {
+            return;
+        }
+
+        this.bufferedInput.pushDirection(direction);
     }
 }
 
