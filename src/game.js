@@ -2,8 +2,8 @@ import { TitleScreen } from './screens/title-screen.js'
 import { GameScreen } from './screens/game-screen.js'
 import { GameOverScreen } from './screens/gameover-screen.js'
 import { Snake } from './snake.js'
-import { MockScoreService as ScoreService } from './mock-score-service.js'
-// import { ScoreService } from './score-service.js'
+// import { MockScoreService as ScoreService } from './mock-score-service.js'
+import { ScoreService } from './score-service.js'
 
 const numSquares = 15;
 
